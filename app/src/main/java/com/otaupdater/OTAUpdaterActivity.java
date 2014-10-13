@@ -70,7 +70,6 @@ public class OTAUpdaterActivity extends BaseDownloadDialogActivity {
     private ServiceConnection billingSrvConn = null;
 
     private final Handler adsHandler = new AdsHandler(this);
-
     private static class AdsHandler extends Handler {
         private final WeakReference<OTAUpdaterActivity> act;
 
@@ -83,8 +82,7 @@ public class OTAUpdaterActivity extends BaseDownloadDialogActivity {
             OTAUpdaterActivity act = this.act.get();
             if (act == null) return;
             Fragment adFragment = act.getFragmentManager().findFragmentById(R.id.ads);
-            if (adFragment != null)
-                act.getFragmentManager().beginTransaction().show(adFragment).commit();
+            if (adFragment != null) act.getFragmentManager().beginTransaction().show(adFragment).commit();
         }
     }
 
@@ -188,45 +186,50 @@ public class OTAUpdaterActivity extends BaseDownloadDialogActivity {
             }
         }
 
-        Utils.updateDeviceRegistration(this);
-        CheckinReceiver.setDailyAlarm(this);
+        if (PropUtils.isRomOtaEnabled() || PropUtils.isKernelOtaEnabled()) {
+            Utils.registerForUpdates(this);
+        } else {
+            Utils.unregisterForUpdates(this);
 
-        if (!PropUtils.isRomOtaEnabled() && !PropUtils.isKernelOtaEnabled() && !cfg.getIgnoredUnsupportedWarn()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.alert_unsupported_title);
-            builder.setMessage(R.string.alert_unsupported_message);
-            builder.setCancelable(false);
-            builder.setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    finish();
-                }
-            });
-            builder.setPositiveButton(R.string.ignore, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    cfg.setIgnoredUnsupportedWarn(true);
-                    dialog.dismiss();
-                }
-            });
+            if (!cfg.getIgnoredUnsupportedWarn()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.alert_unsupported_title);
+                builder.setMessage(R.string.alert_unsupported_message);
+                builder.setCancelable(false);
+                builder.setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+                builder.setPositiveButton(R.string.ignore, new DialogInterface.OnClickListener() {
+    				@Override
+    				public void onClick(DialogInterface dialog, int which) {
+    				    cfg.setIgnoredUnsupportedWarn(true);
+    					dialog.dismiss();
+    				}
+    			});
 
-            final AlertDialog dlg = builder.create();
+                final AlertDialog dlg = builder.create();
 
-            dlg.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    onDialogShown(dlg);
-                }
-            });
-            dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    onDialogClosed(dlg);
-                }
-            });
-            dlg.show();
+                dlg.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        onDialogShown(dlg);
+                    }
+                });
+                dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        onDialogClosed(dlg);
+                    }
+                });
+                dlg.show();
+            }
         }
+
+        CheckinReceiver.setDailyAlarm(this);
 
         setContentView(R.layout.main);
 
@@ -437,7 +440,7 @@ public class OTAUpdaterActivity extends BaseDownloadDialogActivity {
         @Override
         public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
             Object tag = tab.getTag();
-            for (int i = 0; i < mTabs.size(); i++) {
+            for (int i=0; i<mTabs.size(); i++) {
                 if (mTabs.get(i) == tag) {
                     mViewPager.setCurrentItem(i);
                 }
