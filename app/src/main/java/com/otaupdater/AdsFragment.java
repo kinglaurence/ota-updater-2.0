@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.otaupdater.utils.Config;
 
@@ -48,11 +47,12 @@ public class AdsFragment extends Fragment {
         View view = inflater.inflate(R.layout.ads, container, false);
 
         if (!this.isDetached()) {
-            adView = (AdView) view.findViewById(R.id.ad_view);
-            AdRequest adReq = new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .build();
-            adView.loadAd(adReq);
+//            adView = (AdView) view.findViewById(R.id.ad_view);
+//            AdRequest adReq = new AdRequest.Builder()
+//                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//                    .addTestDevice("A462D6D0A148B8607AC0EA1173E32B11")
+//                    .build();
+//            adView.loadAd(adReq);
         }
 
         return view;

@@ -226,12 +226,25 @@ public class Utils {
             public void onSuccess(String message, JSONObject respObj) {
                 cfg.setPingedCurrent();
 
+<<<<<<< HEAD
                 if (PropUtils.isRomOtaEnabled()) {
                     RomInfo info = RomInfo.FACTORY.fromJSON(respObj.optJSONObject(RomInfo.KEY_NAME));
                     if (info != null && info.isUpdate()) {
                         cfg.storeRomUpdate(info);
                         if (cfg.getShowNotif()) {
                             info.showUpdateNotif(ctx);
+=======
+                try {
+                    if (PropUtils.isRomOtaEnabled()) {
+                        RomInfo info = RomInfo.FACTORY.fromJSON(respObj.getJSONObject(RomInfo.KEY_NAME));
+                        if (info.isUpdate()) {
+                            cfg.storeRomUpdate(info);
+                            if (cfg.getShowNotif()) {
+                                info.showUpdateNotif(ctx);
+                            } else {
+                                Log.v(Config.LOG_TAG + "GCMRegister", "got rom update response, notif not shown");
+                            }
+>>>>>>> parent of fadc3d4... fix npe in GCM registration and enable ads
                         } else {
                             Log.v(Config.LOG_TAG + "DeviceRegister", "got rom update response, notif not shown");
                         }
@@ -241,12 +254,24 @@ public class Utils {
                     }
                 }
 
+<<<<<<< HEAD
                 if (PropUtils.isKernelOtaEnabled()) {
                     KernelInfo info = KernelInfo.FACTORY.fromJSON(respObj.optJSONObject(KernelInfo.KEY_NAME));
                     if (info != null && info.isUpdate()) {
                         cfg.storeKernelUpdate(info);
                         if (cfg.getShowNotif()) {
                             info.showUpdateNotif(ctx);
+=======
+                    if (PropUtils.isKernelOtaEnabled()) {
+                        KernelInfo info = KernelInfo.FACTORY.fromJSON(respObj.getJSONObject(KernelInfo.KEY_NAME));
+                        if (info.isUpdate()) {
+                            cfg.storeKernelUpdate(info);
+                            if (cfg.getShowNotif()) {
+                                info.showUpdateNotif(ctx);
+                            } else {
+                                Log.v(Config.LOG_TAG + "GCMRegister", "got kernel update response, notif not shown");
+                            }
+>>>>>>> parent of fadc3d4... fix npe in GCM registration and enable ads
                         } else {
                             Log.v(Config.LOG_TAG + "DeviceRegister", "got kernel update response, notif not shown");
                         }
